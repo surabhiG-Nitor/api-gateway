@@ -1,14 +1,14 @@
 {
-  "name": "resource-management",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
-  "license": "MIT",
-  "scripts": {
+    "name": "api-gateway",
+    "version": "0.0.1",
+    "description": "",
+    "author": "",
+    "license": "MIT",
+    "scripts": {},
+    "dependencies": {
+     "express": "^4.17.1",
+     "express-http-proxy": "^1.5.1",
+     "request": "^2.88.0"
+    }
+   }
    
-  },
-  "dependencies": {
-   
-  }
-  
-}
