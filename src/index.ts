@@ -55,7 +55,7 @@ const oIDCStrategyOptions: IOIDCStrategyOptionWithRequest = {
   responseType: "code",
   // tslint:disable-next-line: object-literal-sort-keys
   responseMode: "query",
-  redirectUrl: "http://localhost:60761/signin-oidc1",
+  redirectUrl: config.oidcRedirectURL,
   identityMetadata: config.creds.identityMetadata,
   clientID: config.creds.clientID,
   passReqToCallback: true,
@@ -76,6 +76,7 @@ passport.use(
       if (!profile.oid) {
         return done(new Error("No oid found"), null);
       } else {
+        console.log("finding by oid ", profile.oid, req.session);
         const existingUser = findByOid(profile.oid);
         if (existingUser) {
           return done(null, existingUser);
@@ -88,9 +89,16 @@ passport.use(
   )
 );
 
-passport.serializeUser((user, done) => done(null, user));
+passport.serializeUser((user: IUser, done) => {
+  console.log("serializeUser called ");
+  done(null, user.oid);
+});
 
-passport.deserializeUser((user, done) => done(null, user));
+passport.deserializeUser((id: string, done) => {
+  console.log("deserializeuser called ", id);
+
+  done(null, findByOid(id));
+});
 
 app.get(
   "/login",
@@ -163,7 +171,7 @@ const ensureAuthenticated = (
 app.use(
   "/ui/*",
   ensureAuthenticated,
-  proxy("http://localhost:5000", {
+  proxy(config.UIPath, {
     preserveHostHdr: true,
     proxyReqPathResolver: getProxyPathResolverFunction("/ui")
   })
@@ -173,11 +181,11 @@ app.use(
 
 app.use(
   "/api/*",
-  proxy("http://localhost:3000", {
+  proxy(config.APIPath, {
     proxyReqPathResolver: getProxyPathResolverFunction("/api")
   })
 ); // this will proxy all incoming requests to /api route to back end
 
 app.listen(config.port, () => {
-  console.log("server started on por t ", config.port);
+  console.log("server started on port ", config.port);
 });

@@ -6,18 +6,20 @@ const readEnv = (propertyName: string, defaultValue: any = undefined) => {
   throw new Error(`${propertyName} not found`);
 };
 
-const UI_PATH = readEnv("UI_PATH", "abc");
-const port = readEnv("port", 60761);
+const UIPath = readEnv("UI_PATH", "abc");
+const port = readEnv("PORT", 60761);
 
 const config = {
-  UI_PATH,
+  APIPath: readEnv("PMO_API_PATH", "http://localhost:3000"),
+  UIPath,
   creds: {
-    clientID: "90dcb25a-183a-4738-a545-e57da5ff952d",
-    clientSecret: "ho_8]y0xo4+gtq.rdPbCvugFRRrfp1r?",
-    identityMetadata:
-      "https://login.microsoftonline.com/8c3dad1d-b6bc-4f8b-939b-8263372eced6/.well-known/openid-configuration"
+    clientID: readEnv("CLIENT_ID", "90dcb25a-183a-4738-a545-e57da5ff952d"),
+    clientSecret: readEnv("CLIENT_SECRET", "ho_8]y0xo4+gtq.rdPbCvugFRRrfp1r?"),
+    identityMetadata: readEnv("IDENTITY_METADATA", "https://login.microsoftonline.com/8c3dad1d-b6bc-4f8b-939b-8263372eced6/.well-known/openid-configuration")
   },
-  port
+  oidcRedirectURL: readEnv("OIDC_REDIRECT_URL", "http://localhost:60761/signin-oidc1"),
+  port,
+  sessionSecret: readEnv("SESSION_SECRET", "keyboard cat")
 };
 
 export default { ...config };
